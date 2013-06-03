@@ -23,40 +23,17 @@ namespace ScrabbleCheater
             }
         }
 
-        public string[] GetBestPlay(string[,] board, List<string> hand)
+        public object[] GetBestPlay(string[,] board, List<string> hand)
         {
-            return new string[3];
+            return new object[3];
         }
 
         
-        private List<string[]> GetMovesInArray(ScrabbleBoard board, List<string> hand, string[] rowOrCol, bool col)
+        private List<object[]> GetMovesInArray(ScrabbleBoard board, List<string> hand, string[] rowOrCol, bool col)
         {
-            List<string[]> moves = new List<string[]>();
-            List<string> dicopy = new List<string>(dictionary);
-            foreach (string word in dicopy)
-            {
-
-            }
+            List<object[]> moves = new List<object[]>();
 
             return moves;
-        }
-
-        /// <summary>
-        /// Gets all words that are made up of a list of strings
-        /// </summary>
-        /// <param name="elements">List to make strings out of</param>
-        /// <returns></returns>
-        public List<string> GetPossibleWordsForRow(List<string> elements)
-        {
-            List<string> possibleWords = new List<string>();
-            foreach (string possibility in GetPossibleCombinations("", elements))
-            {
-                if (dictionary.Contains(possibility))
-                {
-                    possibleWords.Add(possibility);
-                }
-            }
-            return possibleWords;
         }
 
         /// <summary>
@@ -65,7 +42,7 @@ namespace ScrabbleCheater
         /// <param name="hand">Players hand, only made up of length 1 strings</param>
         /// <param name="board">Strings that were on the board of length 1</param>
         /// <returns></returns>
-        public List<string> GetPossibleWordsForRow2(List<string> hand, List<string> board)
+        public List<string> GetPossibleWordsForRow(List<string> hand, List<string> board)
         {
             List<string> handCopy, boardCopy, possibleWords;
             possibleWords = new List<string>();
