@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ScrabbleCheater
 {
-    class ScrabbleBoard
+    public class ScrabbleBoard
     {
         private string[,] lettersOnBoard;
         private string[,] baseBoard;
@@ -17,6 +17,7 @@ namespace ScrabbleCheater
         {
             this.baseBoard = baseBoard;
             this.lettersOnBoard = new string[baseBoard.GetLength(0), baseBoard.GetLength(1)];
+            letterValues = new Hashtable();
         }
 
         /// <summary>
