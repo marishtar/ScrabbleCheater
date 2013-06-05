@@ -145,9 +145,7 @@ namespace ScrabbleCheater
                     }
                 }
             }
-
             return combinations;
         }
-
     }
 }

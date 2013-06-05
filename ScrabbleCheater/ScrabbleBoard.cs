@@ -19,7 +19,7 @@ namespace ScrabbleCheater
         /// </summary>
         /// <param name="baseBoard">2D array representing multipliers on the board</param>
         /// <param name="dictionary">Dictionary of valid words</param>
-        public ScrabbleBoard(string[,] baseBoard,List<string> dictionary)
+        public ScrabbleBoard(string[,] baseBoard, List<string> dictionary)
         {
             this.dictionary = dictionary;
             this.baseBoard = baseBoard;
@@ -150,7 +150,7 @@ namespace ScrabbleCheater
             List<string> handCopy = new List<string>(hand);
             int positionIncrementer = 0;
             string charAtPosition;
-            while (positionIncrementer < word.Length)
+            while (positionIncrementer < word.Length) //checks if it is placable
             {
                 charAtPosition = (northSouth ? lettersOnBoard[position[0],position[1] - positionIncrementer] 
                     : lettersOnBoard[position[0] + positionIncrementer,position[1]]);
@@ -167,7 +167,50 @@ namespace ScrabbleCheater
                     return false;
                 }
                 positionIncrementer++;
-                
+            }
+            //now check if if this creates any non-words in the process
+
+
+            return true;
+        }
+
+        /// <summary>
+        /// Checks the validity of the words in a row or column
+        /// </summary>
+        /// <param name="position">position of the row or column</param>
+        /// <param name="col">True if it is a column to be checked</param>
+        /// <returns>True if all words are valid words.</returns>
+        public bool CheckRowOrCol(int position, bool col)
+        {
+            int counter = 0;
+            string charAtPos;
+            string wordSegment = "";
+            List<string> wordsToCheck = new List<string>();
+            while (counter < lettersOnBoard.GetLength(col ? 1 : 0)) //find what individual words are seperated by blank space
+            {
+                charAtPos = (col ? lettersOnBoard[position,lettersOnBoard.GetLength(1) -1 - counter] : lettersOnBoard[counter,position]);
+                if (charAtPos == null)
+                {
+                    if (!wordSegment.Equals(""))
+                    {
+                        wordsToCheck.Add(new String(wordSegment.ToCharArray()));
+                        wordSegment = "";
+                    }
+                }
+                else
+                {
+                    wordSegment = wordSegment + charAtPos;
+                }
+                counter++;
+            }
+            System.Diagnostics.Debug.WriteLine("Words:");
+            foreach (string word in wordsToCheck) //check if the words greater than length 1 are in the dictionary
+            {
+                System.Diagnostics.Debug.WriteLine(word);
+                if (word.Length != 1 && !dictionary.Contains(word))
+                {
+                    return false;
+                }
             }
 
             return true;

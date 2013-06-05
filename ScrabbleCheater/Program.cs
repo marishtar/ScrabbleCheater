@@ -19,8 +19,8 @@ namespace ScrabbleCheater
             List<string> results;
             asdf.Add("a");
             asdf.Add("b");
-            asdf.Add("C");
-            ScrabbleCheater.Solver solve = new Solver(new ScrabbleBoard(new string[5, 2]));
+            asdf.Add("c");
+            ScrabbleCheater.Solver solve = new Solver(new ScrabbleBoard(new string[5, 2], asdf));
             results = solve.GetPossibleCombinations("", asdf);
             foreach (string el in results)
             {
