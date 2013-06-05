@@ -150,27 +150,45 @@ namespace ScrabbleCheater
             List<string> handCopy = new List<string>(hand);
             int positionIncrementer = 0;
             string charAtPosition;
+            bool usesExistingLetters = false;
+            char[] wordAr = word.ToCharArray(); //word.Substring(positionIncrementer,positionIncrementer) was making strings 
+                                                //longer than length 1.  Odd.
             while (positionIncrementer < word.Length) //checks if it is placable
             {
                 charAtPosition = (northSouth ? lettersOnBoard[position[0],position[1] - positionIncrementer] 
                     : lettersOnBoard[position[0] + positionIncrementer,position[1]]);
                 if (charAtPosition == null && //checks to see if the character on the board is null and that the letter
-                    handCopy.Contains(word.Substring(positionIncrementer, positionIncrementer + 1))) //is also in the hand
+                    handCopy.Contains(wordAr[positionIncrementer].ToString())) //is also in the hand
                 {
                     handCopy.Remove(charAtPosition);
                 }
                 else if (charAtPosition != null && //checks if character on board is not null and that it is equal to the corresponding 
-                    word.Substring(positionIncrementer, positionIncrementer + 1).Equals(charAtPosition)) //character in the word to be played
-                {} //do nothing
+                    wordAr[positionIncrementer].ToString().Equals(charAtPosition)) //character in the word to be played
+                {
+                    usesExistingLetters = true;
+                } //do nothing
                 else
                 {
                     return false;
                 }
                 positionIncrementer++;
             }
+            if (!usesExistingLetters)
+            {
+                return false;
+            }
             //now check if if this creates any non-words in the process
-
-
+            if (!CheckRowOrCol((northSouth ? position[0] : position[1] ), northSouth)) //checks col/row word was placed along
+            {
+                return false;
+            }
+            for (int c = 0; c < word.Length; c++)
+            {
+                if (!CheckRowOrCol((northSouth ? position[1] - c : position[0] + c ), !northSouth))
+                {
+                    return false;
+                }
+            }
             return true;
         }
 
