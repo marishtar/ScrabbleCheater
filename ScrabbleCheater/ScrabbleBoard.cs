@@ -11,7 +11,7 @@ namespace ScrabbleCheater
     {
         private string[,] lettersOnBoard;
         private string[,] baseBoard;
-        private Hashtable letterValues;
+        private Dictionary<string,int> letterValues;
         private List<string> dictionary;
 
         /// <summary>
@@ -19,12 +19,12 @@ namespace ScrabbleCheater
         /// </summary>
         /// <param name="baseBoard">2D array representing multipliers on the board</param>
         /// <param name="dictionary">Dictionary of valid words</param>
-        public ScrabbleBoard(string[,] baseBoard, List<string> dictionary)
+        public ScrabbleBoard(string[,] baseBoard, List<string> dictionary,Dictionary<string,int> letterVals)
         {
             this.dictionary = dictionary;
             this.baseBoard = baseBoard;
             this.lettersOnBoard = new string[baseBoard.GetLength(0), baseBoard.GetLength(1)];
-            letterValues = new Hashtable();
+            this.letterValues = letterVals;
         }
 
         private void SetBoard(string[,] newLettersOnBoard)
@@ -59,6 +59,7 @@ namespace ScrabbleCheater
         /// <returns>Score that the word </returns>
         public int GetPredictedScore(string word, int col, int row, bool northSouth)
         {
+            char[] wordAr = word.ToCharArray();
             int wordMultiplier = 1;
             int letterMultiplier = 1;
             int wordScore = 0;
@@ -87,7 +88,10 @@ namespace ScrabbleCheater
                 }
 
                 //adds to the score of this word
-                wordScore += letterMultiplier * (int)letterValues[lettersOnBoard[col,row]];
+
+                System.Diagnostics.Debug.WriteLine(col + "," + row);
+
+                wordScore += letterMultiplier * letterValues[wordAr[counter].ToString()];
                 letterMultiplier = 1; //resets letterMultiplier
 
                 //increments counters, depending if the word is North-South or East-West
@@ -150,7 +154,7 @@ namespace ScrabbleCheater
             List<string> handCopy = new List<string>(hand);
             int positionIncrementer = 0;
             string charAtPosition;
-            bool usesExistingLetters = false;
+            bool boardersALetter = false;
             char[] wordAr = word.ToCharArray(); //word.Substring(positionIncrementer,positionIncrementer) was making strings 
                                                 //longer than length 1.  Odd.
             while (positionIncrementer < word.Length) //checks if it is placable
@@ -165,15 +169,40 @@ namespace ScrabbleCheater
                 else if (charAtPosition != null && //checks if character on board is not null and that it is equal to the corresponding 
                     wordAr[positionIncrementer].ToString().Equals(charAtPosition)) //character in the word to be played
                 {
-                    usesExistingLetters = true;
+                    boardersALetter = true;
                 } //do nothing
                 else
                 {
                     return false;
+                }/**
+                if ((true && (northSouth ? lettersOnBoard[position[0], position[1] - positionIncrementer]
+                    : lettersOnBoard[position[0] + positionIncrementer, position[1]]) != null) ||
+                    (true && (northSouth ? lettersOnBoard[position[0], position[1] - positionIncrementer]
+                    : lettersOnBoard[position[0] + positionIncrementer, position[1]]) != null))
+                {
+
+                }**/
+
+                if (northSouth)
+                {
+                    if ( (position[0] + 1 < lettersOnBoard.GetLength(0) && lettersOnBoard[position[0] + 1,position[1] - positionIncrementer] != null)
+                        || (position[0] - 1 > 0 && lettersOnBoard[position[0] - 1, position[1] - positionIncrementer] != null))
+                    {
+                        boardersALetter = true;
+                    }
+                }
+                else
+                {
+                    if ((position[1] + 1 < lettersOnBoard.GetLength(1) && lettersOnBoard[position[0] + positionIncrementer, position[1] + 1] != null)
+                        || (position[1] - 1 > 0 && lettersOnBoard[position[0] + positionIncrementer, position[1] - 1] != null))
+                    {
+                        boardersALetter = true;
+                    }
+
                 }
                 positionIncrementer++;
             }
-            if (!usesExistingLetters)
+            if (!boardersALetter)
             {
                 return false;
             }
@@ -221,10 +250,8 @@ namespace ScrabbleCheater
                 }
                 counter++;
             }
-            System.Diagnostics.Debug.WriteLine("Words:");
             foreach (string word in wordsToCheck) //check if the words greater than length 1 are in the dictionary
             {
-                System.Diagnostics.Debug.WriteLine(word);
                 if (word.Length != 1 && !dictionary.Contains(word))
                 {
                     return false;
@@ -242,7 +269,7 @@ namespace ScrabbleCheater
         {
             string[,] newBaseBoard = (string[,])this.baseBoard.Clone();
 
-            ScrabbleBoard newBoard = new ScrabbleBoard(newBaseBoard, this.dictionary);
+            ScrabbleBoard newBoard = new ScrabbleBoard(newBaseBoard, this.dictionary, letterValues);
             newBoard.SetBoard((string[,])this.lettersOnBoard);
             return newBoard;
         }

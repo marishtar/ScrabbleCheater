@@ -9,7 +9,7 @@ namespace ScrabbleCheater
     /// <summary>
     /// Representation of a move that can be played on a board.
     /// </summary>
-    class Move
+    public class Move
     {
         private int[] position;
         private string word;
@@ -32,7 +32,7 @@ namespace ScrabbleCheater
         /// Returns the word
         /// </summary>
         /// <returns>The word</returns>
-        public string getWord()
+        public string GetWord()
         {
             return word;
         }
@@ -41,7 +41,7 @@ namespace ScrabbleCheater
         /// Returns position of the first character of the word
         /// </summary>
         /// <returns>Position of the first character of the word</returns>
-        public int[] getPosition()
+        public int[] GetPosition()
         {
             return position;
         }
@@ -50,9 +50,28 @@ namespace ScrabbleCheater
         /// Returns if the word runs up/down
         /// </summary>
         /// <returns>If the word runs up/down</returns>
-        public bool getIfNorthSouth()
+        public bool GetIfNorthSouth()
         {
             return northSouth;
+        }
+
+        /// <summary>
+        /// Returns clone of Move
+        /// </summary>
+        /// <returns>Clone of Move</returns>
+        public Move Clone()
+        {
+            int[] newPos = new int[2];
+            newPos[0] = this.position[0];
+            newPos[1] = this.position[1];
+            Move newMove = new Move(new String(this.word.ToCharArray()), newPos, this.northSouth);
+            return newMove;
+        }
+
+        
+        public override string ToString()
+        {
+            return "{" + word + ",[" + position[0].ToString() + "," + position[1].ToString() + "]," + (northSouth ? "updown}" : "leftright}");
         }
     }
 }

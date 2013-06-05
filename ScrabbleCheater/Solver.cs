@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,9 +45,37 @@ namespace ScrabbleCheater
         /// <param name="board">ScrabbleBoard that the move will be played on</param>
         /// <param name="hand">List of length 1 strings that the player has in his/her hand</param>
         /// <returns></returns>
-        public object[] GetBestPlay(ScrabbleBoard board, List<string> hand)
+        public Move GetBestPlay(ScrabbleBoard board, List<string> hand)
         {
-            return new object[3];
+            List<Move> allMoves = new List<Move>();
+            for (int c = 0; c < this.board.GetRow(0).Length; c++)
+            {
+                foreach (Move move in GetMovesInArray(board, hand, board.GetCol(c), true, c))
+                {
+                    allMoves.Add(move);
+                }
+            }
+            for (int c = 0; c < this.board.GetCol(0).Length; c++)
+            {
+                foreach (Move move in GetMovesInArray(board, hand, board.GetRow(c), false, c))
+                {
+                    allMoves.Add(move);
+                }
+            }
+            Move bestMove = new Move(null,null,true); ;
+            int topScore = 0;
+            int currentScore;
+            foreach (Move move in allMoves)
+            {
+                //System.Diagnostics.Debug.WriteLine(move.ToString());
+                currentScore = board.GetPredictedScore(move.GetWord(), move.GetPosition()[0], move.GetPosition()[1], move.GetIfNorthSouth());
+                if (currentScore > topScore)
+                {
+                    topScore = currentScore;
+                    bestMove = move;
+                }
+            }
+            return bestMove;
         }
 
         /// <summary>
@@ -57,10 +86,32 @@ namespace ScrabbleCheater
         /// <param name="rowOrCol">Position</param>
         /// <param name="col">True if it runs up/down</param>
         /// <returns>List of moves, formed in an array [string word, int[1,1] position, bool NorthSouth]</returns>
-        private List<object[]> GetMovesInArray(ScrabbleBoard board, List<string> hand, string[] rowOrCol, bool col)
+        public List<Move> GetMovesInArray(ScrabbleBoard board, List<string> hand, string[] rowOrCol, bool col, int pos)
         {
-            List<object[]> moves = new List<object[]>();
-
+            List<Move> moves = new List<Move>();
+            List<string> boardLetters = new List<string>();
+            Move possibleMove;
+            int[] position = new int[2];
+            foreach (string letter in rowOrCol)
+            {
+                if (letter != null)
+                {
+                    boardLetters.Add(letter);
+                }
+            }
+            foreach (string word in GetPossibleWordsForRow(hand, boardLetters))
+            {
+                for (int c = 0; c + word.Length < (col ? board.GetCol(pos).Length : board.GetRow(pos).Length) ; c++)
+                {
+                    position[0] = (col ? pos : c);
+                    position[1] = (col ? board.GetRow(pos).Length - 1 - c : pos);
+                    possibleMove = new Move(word, position, col);
+                    if (board.CheckIfValidMove(word,position,col,hand))
+                    {
+                        moves.Add(possibleMove.Clone());
+                    }
+                }
+            }
             return moves;
         }
 
@@ -111,12 +162,10 @@ namespace ScrabbleCheater
                         break;
                     }
 
-                    if (wordCopy.Length == 0 && onBoard && inHand)
+                    if (wordCopy.Length == 0 && inHand)
                     {
                         possibleWords.Add(word);
-                        System.Diagnostics.Debug.WriteLine(word);
                     }
-
                 }
             }
             return possibleWords;
