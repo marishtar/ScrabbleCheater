@@ -12,23 +12,51 @@ namespace ScrabbleCheater
         List<string> dictionary;
         ScrabbleBoard board;
 
+        /// <summary>
+        /// Constructor for the solver that uses default WWF Dicionary
+        /// </summary>
+        /// <param name="board">ScrabbleBoard to be played on</param>
         public Solver(ScrabbleBoard board)
         {
             this.board = board;
             string[] lines = System.IO.File.ReadAllLines("WWFDictionary.txt");
-            dictionary = new List<string>();
+            this.dictionary = new List<string>();
             foreach (string s in lines)
             {
                 dictionary.Add(s);
             }
         }
 
-        public object[] GetBestPlay(string[,] board, List<string> hand)
+        /// <summary>
+        /// Constructor for solver that takes in custom dictionary
+        /// </summary>
+        /// <param name="board">ScrabbleBoard to be played on</param>
+        /// <param name="dictionary">List of strings that are valid words</param>
+        public Solver(ScrabbleBoard board, List<string> dictionary)
+        {
+            this.board = board;
+            this.dictionary = dictionary;
+        }
+
+        /// <summary>
+        /// Returns the best possible move, given a ScrabbleBoard and a list of strings representing the player's hand.
+        /// </summary>
+        /// <param name="board">ScrabbleBoard that the move will be played on</param>
+        /// <param name="hand">List of length 1 strings that the player has in his/her hand</param>
+        /// <returns></returns>
+        public object[] GetBestPlay(ScrabbleBoard board, List<string> hand)
         {
             return new object[3];
         }
 
-        
+        /// <summary>
+        /// Returns list of moves that can be done with a specific hand
+        /// </summary>
+        /// <param name="board">string array of letters on the board for that</param>
+        /// <param name="hand">List of length 1 strings in the player's hand</param>
+        /// <param name="rowOrCol">Position</param>
+        /// <param name="col">True if it runs up/down</param>
+        /// <returns>List of moves, formed in an array [string word, int[1,1] position, bool NorthSouth]</returns>
         private List<object[]> GetMovesInArray(ScrabbleBoard board, List<string> hand, string[] rowOrCol, bool col)
         {
             List<object[]> moves = new List<object[]>();

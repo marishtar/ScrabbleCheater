@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,13 +12,24 @@ namespace ScrabbleCheater
         private string[,] lettersOnBoard;
         private string[,] baseBoard;
         private Hashtable letterValues;
+        private List<string> dictionary;
 
-        
-        public ScrabbleBoard(string[,] baseBoard)
+        /// <summary>
+        /// Constructor for ScrabbleBoard, taking in a 2D array of the base board (which contains only multipliers)
+        /// </summary>
+        /// <param name="baseBoard">2D array representing multipliers on the board</param>
+        /// <param name="dictionary">Dictionary of valid words</param>
+        public ScrabbleBoard(string[,] baseBoard,List<string> dictionary)
         {
+            this.dictionary = dictionary;
             this.baseBoard = baseBoard;
             this.lettersOnBoard = new string[baseBoard.GetLength(0), baseBoard.GetLength(1)];
             letterValues = new Hashtable();
+        }
+
+        private void SetBoard(string[,] newLettersOnBoard)
+        {
+            this.lettersOnBoard = newLettersOnBoard;
         }
 
         /// <summary>
@@ -124,6 +136,54 @@ namespace ScrabbleCheater
                 row++;
             }
             return newCol;
+        }
+
+        /// <summary>
+        /// Checks to see if a move is a valid move, given also the hand that will play it.
+        /// </summary>
+        /// <param name="word">Word to be played</param>
+        /// <param name="position">(x,y) position of the first letter in the word</param>
+        /// <param name="northSouth">True if the play runs up/down.</param>
+        /// <returns>True if the move is valid</returns>
+        public bool CheckIfValidMove(string word, int[] position, bool northSouth, List<string> hand)
+        {
+            List<string> handCopy = new List<string>(hand);
+            int positionIncrementer = 0;
+            string charAtPosition;
+            while (positionIncrementer < word.Length)
+            {
+                charAtPosition = (northSouth ? lettersOnBoard[position[0],position[1] - positionIncrementer] 
+                    : lettersOnBoard[position[0] + positionIncrementer,position[1]]);
+                if (charAtPosition == null && //checks to see if the character on the board is null and that the letter
+                    handCopy.Contains(word.Substring(positionIncrementer, positionIncrementer + 1))) //is also in the hand
+                {
+                    handCopy.Remove(charAtPosition);
+                }
+                else if (charAtPosition != null && //checks if character on board is not null and that it is equal to the corresponding 
+                    word.Substring(positionIncrementer, positionIncrementer + 1).Equals(charAtPosition)) //character in the word to be played
+                {} //do nothing
+                else
+                {
+                    return false;
+                }
+                positionIncrementer++;
+                
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Returns a deep copy of this ScrabbleBoard
+        /// </summary>
+        /// <returns>Clone of ScrabbleBoard</returns>
+        public ScrabbleBoard Clone()
+        {
+            string[,] newBaseBoard = (string[,])this.baseBoard.Clone();
+
+            ScrabbleBoard newBoard = new ScrabbleBoard(newBaseBoard, this.dictionary);
+            newBoard.SetBoard((string[,])this.lettersOnBoard);
+            return newBoard;
         }
     }
 }
