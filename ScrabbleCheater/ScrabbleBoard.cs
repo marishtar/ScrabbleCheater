@@ -27,9 +27,22 @@ namespace ScrabbleCheater
             this.letterValues = letterVals;
         }
 
+        /// <summary>
+        /// Sets the lettersOnBoard to a new array
+        /// </summary>
+        /// <param name="newLettersOnBoard"></param>
         private void SetBoard(string[,] newLettersOnBoard)
         {
             this.lettersOnBoard = newLettersOnBoard;
+        }
+
+        /// <summary>
+        /// returns array of lettersOnBoard
+        /// </summary>
+        /// <returns></returns>
+        private string[,] GetLetterBoard()
+        {
+            return this.lettersOnBoard;
         }
 
         /// <summary>
@@ -88,9 +101,6 @@ namespace ScrabbleCheater
                 }
 
                 //adds to the score of this word
-
-                System.Diagnostics.Debug.WriteLine(col + "," + row);
-
                 wordScore += letterMultiplier * letterValues[wordAr[counter].ToString()];
                 letterMultiplier = 1; //resets letterMultiplier
 
@@ -170,18 +180,11 @@ namespace ScrabbleCheater
                     wordAr[positionIncrementer].ToString().Equals(charAtPosition)) //character in the word to be played
                 {
                     boardersALetter = true;
-                } //do nothing
+                }
                 else
                 {
                     return false;
-                }/**
-                if ((true && (northSouth ? lettersOnBoard[position[0], position[1] - positionIncrementer]
-                    : lettersOnBoard[position[0] + positionIncrementer, position[1]]) != null) ||
-                    (true && (northSouth ? lettersOnBoard[position[0], position[1] - positionIncrementer]
-                    : lettersOnBoard[position[0] + positionIncrementer, position[1]]) != null))
-                {
-
-                }**/
+                }
 
                 if (northSouth)
                 {
@@ -207,13 +210,21 @@ namespace ScrabbleCheater
                 return false;
             }
             //now check if if this creates any non-words in the process
-            if (!CheckRowOrCol((northSouth ? position[0] : position[1] ), northSouth)) //checks col/row word was placed along
+            ScrabbleBoard testBoard = this.Clone();
+            positionIncrementer = 0;
+            foreach (char character in wordAr)
+            {
+                testBoard.PlaceLetter(character.ToString(), 
+                    position[0] + (northSouth ? 0 : positionIncrementer ), position[1] - (northSouth ? positionIncrementer : 0 ));
+                positionIncrementer++;
+            }
+            if (!CheckRowOrCol((northSouth ? position[0] : position[1] ), northSouth,testBoard)) //checks col/row word was placed along
             {
                 return false;
             }
             for (int c = 0; c < word.Length; c++)
             {
-                if (!CheckRowOrCol((northSouth ? position[1] - c : position[0] + c ), !northSouth))
+                if (!CheckRowOrCol((northSouth ? position[1] - c : position[0] + c ), !northSouth,testBoard))
                 {
                     return false;
                 }
@@ -227,8 +238,9 @@ namespace ScrabbleCheater
         /// <param name="position">position of the row or column</param>
         /// <param name="col">True if it is a column to be checked</param>
         /// <returns>True if all words are valid words.</returns>
-        public bool CheckRowOrCol(int position, bool col)
+        public bool CheckRowOrCol(int position, bool col, ScrabbleBoard testBoard)
         {
+            string[,] lettersOnBoard = testBoard.GetLetterBoard();
             int counter = 0;
             string charAtPos;
             string wordSegment = "";
@@ -252,6 +264,7 @@ namespace ScrabbleCheater
             }
             foreach (string word in wordsToCheck) //check if the words greater than length 1 are in the dictionary
             {
+                System.Diagnostics.Debug.WriteLine(word);
                 if (word.Length != 1 && !dictionary.Contains(word))
                 {
                     return false;
@@ -270,7 +283,7 @@ namespace ScrabbleCheater
             string[,] newBaseBoard = (string[,])this.baseBoard.Clone();
 
             ScrabbleBoard newBoard = new ScrabbleBoard(newBaseBoard, this.dictionary, letterValues);
-            newBoard.SetBoard((string[,])this.lettersOnBoard);
+            newBoard.SetBoard((string[,])this.lettersOnBoard.Clone());
             return newBoard;
         }
     }

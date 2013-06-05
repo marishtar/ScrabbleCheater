@@ -67,10 +67,10 @@ namespace ScrabbleCheater
             int currentScore;
             foreach (Move move in allMoves)
             {
-                //System.Diagnostics.Debug.WriteLine(move.ToString());
                 currentScore = board.GetPredictedScore(move.GetWord(), move.GetPosition()[0], move.GetPosition()[1], move.GetIfNorthSouth());
                 if (currentScore > topScore)
                 {
+                    System.Diagnostics.Debug.WriteLine(move.ToString());
                     topScore = currentScore;
                     bestMove = move;
                 }
