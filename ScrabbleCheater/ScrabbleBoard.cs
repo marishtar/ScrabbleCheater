@@ -31,7 +31,7 @@ namespace ScrabbleCheater
         /// Sets the lettersOnBoard to a new array
         /// </summary>
         /// <param name="newLettersOnBoard"></param>
-        private void SetBoard(string[,] newLettersOnBoard)
+        public void SetBoard(string[,] newLettersOnBoard)
         {
             this.lettersOnBoard = newLettersOnBoard;
         }
@@ -233,6 +233,35 @@ namespace ScrabbleCheater
         }
 
         /// <summary>
+        /// Checks if a move actually lays down any new letters.  False if it does.
+        /// </summary>
+        /// <param name="move">move to check</param>
+        /// <returns></returns>
+        public Boolean CheckIfRetread(Move move)
+        {
+            int counter = move.GetWord().Length;
+            int x = move.GetPosition()[0];
+            int y = move.GetPosition()[1];
+            while (counter > 0)
+            {
+                if (lettersOnBoard[x, y] == null)
+                {
+                    return false;
+                }
+                if (move.GetIfNorthSouth())
+                {
+                    y--;
+                }
+                else
+                {
+                    x++;
+                }
+                counter--;
+            }
+            return true;
+        }
+
+        /// <summary>
         /// Checks the validity of the words in a row or column
         /// </summary>
         /// <param name="position">position of the row or column</param>
@@ -285,6 +314,39 @@ namespace ScrabbleCheater
             ScrabbleBoard newBoard = new ScrabbleBoard(newBaseBoard, this.dictionary, letterValues);
             newBoard.SetBoard((string[,])this.lettersOnBoard.Clone());
             return newBoard;
+        }
+
+        /// <summary>
+        /// Returns a string representation of the board.
+        /// </summary>
+        /// <returns></returns>
+        public String ToString()
+        {
+            int x = 0;
+            int y = lettersOnBoard.GetLength(1) - 1;
+            string boardString = "";
+            /**while (y >= 0)
+            {
+                while (x < lettersOnBoard.GetLength(1))
+                {
+                    if (lettersOnBoard[x, y] == null || lettersOnBoard[x, y].Equals(""))
+                    {
+                        boardString += ".";
+                    }
+                    else
+                    {
+                        boardString += lettersOnBoard[x, y];
+                    }
+                    x++;
+                    boardString += "\n";
+                }
+                y--;
+            }**/
+            foreach (string s in lettersOnBoard)
+            {
+                boardString += s;
+            }
+            return boardString;
         }
     }
 }

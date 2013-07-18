@@ -1,0 +1,10 @@
+C:\Users\johndeeney\Documents\ScrabbleCheater\ScrabbleCheater\bin\Debug\ScrabbleCheater.exe.config
+C:\Users\johndeeney\Documents\ScrabbleCheater\ScrabbleCheater\bin\Debug\WWFDictionary.txt
+C:\Users\johndeeney\Documents\ScrabbleCheater\ScrabbleCheater\bin\Debug\ScrabbleCheater.exe
+C:\Users\johndeeney\Documents\ScrabbleCheater\ScrabbleCheater\bin\Debug\ScrabbleCheater.pdb
+C:\Users\johndeeney\Documents\ScrabbleCheater\ScrabbleCheater\obj\Debug\ScrabbleCheater.csprojResolveAssemblyReference.cache
+C:\Users\johndeeney\Documents\ScrabbleCheater\ScrabbleCheater\obj\Debug\ScrabbleCheater.Properties.Resources.resources
+C:\Users\johndeeney\Documents\ScrabbleCheater\ScrabbleCheater\obj\Debug\ScrabbleCheater.csproj.GenerateResource.Cache
+C:\Users\johndeeney\Documents\ScrabbleCheater\ScrabbleCheater\obj\Debug\ScrabbleCheater.exe
+C:\Users\johndeeney\Documents\ScrabbleCheater\ScrabbleCheater\obj\Debug\ScrabbleCheater.pdb
+C:\Users\johndeeney\Documents\ScrabbleCheater\ScrabbleCheater\obj\Debug\ScrabbleCheater.ScrabbleUI.resources

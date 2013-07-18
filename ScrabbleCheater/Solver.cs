@@ -68,7 +68,7 @@ namespace ScrabbleCheater
             foreach (Move move in allMoves)
             {
                 currentScore = board.GetPredictedScore(move.GetWord(), move.GetPosition()[0], move.GetPosition()[1], move.GetIfNorthSouth());
-                if (currentScore > topScore)
+                if (currentScore > topScore && !board.CheckIfRetread(move))
                 {
                     System.Diagnostics.Debug.WriteLine(move.ToString());
                     topScore = currentScore;
